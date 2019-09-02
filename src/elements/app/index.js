@@ -9,7 +9,7 @@ import {
 import dialog from 'omim/dialog'
 import util from '../../assets/script/util'
 
-define('app', class extends WeElement {
+define('my-app', class extends WeElement {
   static css = [require('./_index.less')]
   errorAmount = 0
   currentNumber = 0

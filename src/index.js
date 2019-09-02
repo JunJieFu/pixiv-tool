@@ -6,4 +6,4 @@ import 'omim/text-field'
 import './components/form/btn/index'
 import './components/form/input/index'
 
-render(<app />, '#pixiv-tool')
+render(<my-app />, '#pixiv-tool')
