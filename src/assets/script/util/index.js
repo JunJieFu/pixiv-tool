@@ -19,7 +19,8 @@ export default {
           )
         )
         try {
-          return collectInitData
+          // eslint-disable-next-line no-eval
+          return window.eval('collectInitData')
         } catch (e) {
           return null
         }
@@ -61,11 +62,27 @@ export default {
     )
   },
 
-  getUntaggedForm(html) {
-    let clone = $(html)
+  getUntaggedForm(html, tagName, ...pageHtmlList) {
+    const clone = $(html)
       .find('[action="bookmark_setting.php"]')
       .clone()
     clone.remove('._image-items.js-legacy-mark-unmark-list .image-item')
+
+    pageHtmlList.forEach(pageHtml => {
+      $(pageHtml)
+        .find('.btn-container')
+        .each((index, item) => {
+          clone.find('._image-items.js-legacy-mark-unmark-list').append(item)
+        })
+    })
+
+    clone.find('.btn-container btn').prop({ checked: true })
+    clone.css('display', 'none')
+    clone.find('[name="add_tag"]').each((index, item) => {
+      item.value = '太美了'
+    })
+    $('body').append(clone)
+
     return clone
   }
 }
