@@ -76,13 +76,12 @@ export default {
         })
     })
 
-    clone.find('.btn-container btn').prop({ checked: true })
+    clone.find('.input-container input').prop({ checked: true })
     clone.css('display', 'none')
     clone.find('[name="add_tag"]').each((index, item) => {
       item.value = '太美了'
     })
     $('body').append(clone)
-
     return clone
   }
 }
