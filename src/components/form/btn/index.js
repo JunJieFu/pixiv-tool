@@ -17,7 +17,7 @@ define('my-btn', class extends WeElement {
       'btn'
     )
     return (
-      <button class={classList}>
+      <button class={classList} o-ripple>
         <div class={'content'}>
           <slot />
         </div>
