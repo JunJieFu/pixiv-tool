@@ -24,6 +24,7 @@ define('my-input', class extends WeElement {
       { big: !!props.big },
       { block: !!props.block },
       { disabled: !!props.disabled },
+      { shadow: !!props.shadow },
       { textarea: !!props.textarea },
       { type: props.type === 'textarea' },
       'input'

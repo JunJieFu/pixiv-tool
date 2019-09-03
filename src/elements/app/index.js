@@ -71,15 +71,20 @@ define('my-app', class extends WeElement {
             采集标签
           </my-btn>
         </div>
+        <br />
         <div>
           <my-input
+            color={'primary'}
             value={this.tagValue}
             onInput={e => {
               this.tagValue = e.target.value
               this.update()
             }}
+            shadow
           />
-          <my-btn color={'primary'} onClick={this.addTag}>
+          <br />
+          <br />
+          <my-btn color={'primary'} onClick={this.addTag} shadow>
             批量添加标签
           </my-btn>
           <p>{this.tagValue}</p>
