@@ -17,7 +17,7 @@ define('my-btn', class extends WeElement {
       'btn'
     )
     return (
-      <button class={classList} o-ripple>
+      <button class={classList} o-ripple disabled={props.disabled}>
         <div class={'content'}>
           <slot />
         </div>
