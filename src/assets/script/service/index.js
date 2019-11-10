@@ -2,7 +2,7 @@ import $ from 'jquery'
 import { pixivHost, serveHost } from '../../../assets/script/config'
 
 export function AListTagTask() {
-  return $.ajax(`${serveHost}/draw/listTagTask`, {})
+  return $.ajax(`${serveHost}/collect/listTagTask`, {})
 }
 
 export function ACollect(pixivId) {
@@ -13,7 +13,7 @@ export function ACollect(pixivId) {
 
 export function APixivDrawSave(pixivDraw) {
   $.post({
-    url: `${serveHost}/draw/pixivDrawSave`,
+    url: `${serveHost}/collect/save`,
     data: pixivDraw,
     dataType: 'json'
   })
@@ -21,7 +21,7 @@ export function APixivDrawSave(pixivDraw) {
 
 export function APixivErrorSave(error) {
   $.post({
-    url: `${serveHost}/draw/pixivErrorSave`,
+    url: `${serveHost}/collect/saveError`,
     data: error,
     dataType: 'json'
   })

@@ -6,33 +6,38 @@ export default {
    * @returns {{pixivId: *, name: *, tagString: *, userName: *, userId: *}}
    */
   getPixivObject(html) {
-    let scriptList = html.match(/<script>'use strict'[\s\S]+?<\/script>/g)
+    let sourceObject = JSON.parse($(html).filter((index,item) => item.id==="meta-preload-data").attr("content"))
     let draw = null
-    for (let script of scriptList) {
-      let scriptString = $(script).html()
-      let sourceObject = (function() {
-        // eslint-disable-next-line no-eval
-        window.eval(
-          scriptString.replace(
-            "'use strict';var globalInitData",
-            'var collectInitData'
-          )
-        )
-        try {
-          // eslint-disable-next-line no-eval
-          return window.eval('collectInitData')
-        } catch (e) {
-          return null
-        }
-      })()
-      if (sourceObject) {
+    // for (let script of scriptList) {
+    //   let scriptString = $(script).html()
+    //   let sourceObject = (function() {
+    //     // eslint-disable-next-line no-eval
+    //     window.eval(
+    //       scriptString.replace(
+    //         "'use strict';var globalInitData",
+    //         'var collectInitData'
+    //       )
+    //     )
+    //     try {
+    //       // eslint-disable-next-line no-eval
+    //       return window.eval('collectInitData')
+    //     } catch (e) {
+    //       return null
+    //     }
+    //   })()
+    //   if (sourceObject) {
+    //     draw =
+    //       sourceObject.preload.illust[
+    //         Object.keys(sourceObject.preload.illust)[0]
+    //       ]
+    //     break
+    //   }
+    // }
+
         draw =
-          sourceObject.preload.illust[
-            Object.keys(sourceObject.preload.illust)[0]
+          sourceObject.illust[
+            Object.keys(sourceObject.illust)[0]
           ]
-        break
-      }
-    }
     if (!draw) {
       throw new Error('draw为空?')
     } else {

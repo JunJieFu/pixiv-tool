@@ -14,7 +14,7 @@ define('my-app', class extends WeElement {
   errorAmount = 0
   currentNumber = 0
   tagValue = '太美了'
-
+  loading = false
   collectTag = () => {
     dialog.confirm({
       confirmText: '确定',
@@ -22,7 +22,8 @@ define('my-app', class extends WeElement {
       msg: '你确定添加吗？',
       confirm: async () => {
         let tagTaskList = await AListTagTask()
-        for (let tagTask of tagTaskList) {
+        this.loading = true;
+        for (let tagTask of tagTaskList.data) {
           try {
             let html = await ACollect(tagTask.pixivId)
             let object = util.getPixivObject(html)
@@ -33,7 +34,7 @@ define('my-app', class extends WeElement {
             this.currentNumber++
             await APixivErrorSave({
               pixivId: tagTask.pixivId,
-              message: e.status
+              message: e.message
             })
             this.update()
           }
@@ -69,6 +70,9 @@ define('my-app', class extends WeElement {
           <p>采集异常数：{this.errorAmount}</p>
           <my-btn color={'primary'} onClick={this.collectTag}>
             采集标签
+          </my-btn>
+          <my-btn color={'primary'} onClick={this.loading = false}>
+            停止
           </my-btn>
         </div>
         <br />
