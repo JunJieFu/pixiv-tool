@@ -75,7 +75,7 @@ export default {
 
     pageHtmlList.forEach(pageHtml => {
       $(pageHtml)
-        .find('.btn-container')
+        .find('.input-container')
         .each((index, item) => {
           clone.find('._image-items.js-legacy-mark-unmark-list').append(item)
         })
