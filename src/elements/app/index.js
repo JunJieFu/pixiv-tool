@@ -22,7 +22,7 @@ define('my-app', class extends WeElement {
       msg: '你确定添加吗？',
       confirm: async () => {
         let tagTaskList = await AListTagTask()
-        this.loading = true;
+        this.loading = true
         for (let tagTask of tagTaskList.data) {
           try {
             let html = await ACollect(tagTask.pixivId)
@@ -31,10 +31,10 @@ define('my-app', class extends WeElement {
             this.currentNumber++
             this.update()
           } catch (e) {
-            this.currentNumber++
+            this.errorAmount++
             await APixivErrorSave({
               pixivId: tagTask.pixivId,
-              message: e.message
+              message: e.status || e.message || 403
             })
             this.update()
           }
@@ -71,7 +71,7 @@ define('my-app', class extends WeElement {
           <my-btn color={'primary'} onClick={this.collectTag}>
             采集标签
           </my-btn>
-          <my-btn color={'primary'} onClick={this.loading = false}>
+          <my-btn color={'primary'} onClick={(this.loading = false)}>
             停止
           </my-btn>
         </div>

@@ -6,7 +6,11 @@ export default {
    * @returns {{pixivId: *, name: *, tagString: *, userName: *, userId: *}}
    */
   getPixivObject(html) {
-    let sourceObject = JSON.parse($(html).filter((index,item) => item.id==="meta-preload-data").attr("content"))
+    let sourceObject = JSON.parse(
+      $(html)
+        .filter((index, item) => item.id === 'meta-preload-data')
+        .attr('content')
+    )
     let draw = null
     // for (let script of scriptList) {
     //   let scriptString = $(script).html()
@@ -34,10 +38,7 @@ export default {
     //   }
     // }
 
-        draw =
-          sourceObject.illust[
-            Object.keys(sourceObject.illust)[0]
-          ]
+    draw = sourceObject.illust[Object.keys(sourceObject.illust)[0]]
     if (!draw) {
       throw new Error('draw为空?')
     } else {
@@ -56,6 +57,12 @@ export default {
           .join('|')
       }
     }
+  },
+
+  getPixivError(html) {
+    return $(html)
+      .find('error-message')[0]
+      .text()
   },
 
   getUntaggedAmount(html) {
