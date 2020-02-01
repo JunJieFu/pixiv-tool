@@ -34,7 +34,8 @@ define('my-app', class extends WeElement {
             this.errorAmount++
             await APixivErrorSave({
               pixivId: tagTask.pixivId,
-              message: e.status || e.message || 403
+              status:e.status|| 403,
+              message: e.message
             })
             this.update()
           }
