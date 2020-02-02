@@ -8,13 +8,25 @@ import {
 } from '../../assets/script/service'
 import dialog from 'omim/dialog'
 import util from '../../assets/script/util'
+import { AuthorizeForm } from '../../assets/script/model'
 
 define('my-app', class extends WeElement {
   static css = [require('./_index.less')]
+  type = true
   errorAmount = 0
-  currentNumber = 0
+  currentAmount = 0
   tagValue = '太美了'
   loading = false
+  authorizeForm = new AuthorizeForm()
+  authorizeTips = '待设置授权信息'
+  authorize = ()=>{
+    window.authorizeForm = this.authorizeForm
+    if(window.authorizeForm.accessKey && window.authorizeForm.secretKey){
+      this.authorizeTips = '设置授权信息成功'
+    }
+    this.update()
+  }
+
   collectTag = () => {
     dialog.confirm({
       confirmText: '确定',
@@ -28,7 +40,7 @@ define('my-app', class extends WeElement {
             let html = await ACollect(tagTask.pixivId)
             let object = util.getPixivObject(html)
             await APixivDrawSave(object)
-            this.currentNumber++
+            this.currentAmount++
             this.update()
           } catch (e) {
             this.errorAmount++
@@ -64,20 +76,55 @@ define('my-app', class extends WeElement {
   }
 
   render() {
-    return (
-      <div>
+    let resultDiv = null
+    if(this.type){
+      resultDiv = (<div>
+        <div style={{marginBottom:"15px"}}>
+          <my-input
+            color={'primary'}
+            value={this.authorizeForm.accessKey}
+            onInput={e => {
+              this.authorizeForm.accessKey = e.target.value
+              this.update()
+            }}
+            placeholder={'accessKey'}
+            shadow
+          />
+        </div>
+        <div style={{marginBottom:"15px"}}>
+          <my-input
+          color={'primary'}
+          value={this.authorizeForm.secretKey}
+          onInput={e => {
+            this.authorizeForm.secretKey = e.target.value
+            this.update()
+          }}
+          placeholder={'secretKey'}
+          type={'password'}
+          shadow
+        />
+        </div>
         <div>
-          <p>采集坐标：{this.currentNumber}</p>
-          <p>采集异常数：{this.errorAmount}</p>
-          <my-btn color={'primary'} onClick={this.collectTag}>
-            采集标签
-          </my-btn>
-          <my-btn color={'primary'} onClick={(this.loading = false)}>
-            停止
+          <my-btn color={'primary'} onClick={this.authorize} shadow>
+            {this.authorizeTips}
           </my-btn>
         </div>
-        <br />
+        <div style={{display:'flex'}}>
+          <p style={{flex:1}}>采集坐标：{this.currentAmount}</p>
+          <p style={{flex:1}}>采集异常数：{this.errorAmount}</p>
+        </div>
         <div>
+          <my-btn color={'primary'} onClick={this.collectTag} shadow>
+           采集标签
+          </my-btn>
+          <my-btn color={'primary'} onClick={(this.loading = false)} shadow style={{ marginLeft: "10px" }}>
+           停止
+          </my-btn>
+        </div>
+      </div>)
+    }else {
+      resultDiv = (<div>
+        <div style={{marginBottom:"15px"}}>
           <my-input
             color={'primary'}
             value={this.tagValue}
@@ -87,13 +134,28 @@ define('my-app', class extends WeElement {
             }}
             shadow
           />
-          <br />
-          <br />
-          <my-btn color={'primary'} onClick={this.addTag} shadow>
-            批量添加标签
-          </my-btn>
-          <p>{this.tagValue}</p>
         </div>
+        <div style={{marginBottom:"15px"}}>
+          <my-btn color={'primary'} onClick={this.addTag} shadow>
+           批量添加标签
+          </my-btn>
+        </div>
+      </div>)
+    }
+
+    return (
+      <div>
+        <div style={{marginBottom:"15px"}}>
+          <my-btn color={'primary'} onClick={
+            _=>{
+              this.type = !this.type
+              this.update()
+            }
+          } shadow style={{marginTop: '15px'}}>
+            切换面板
+          </my-btn>
+        </div>
+        {resultDiv}
       </div>
     )
   }
