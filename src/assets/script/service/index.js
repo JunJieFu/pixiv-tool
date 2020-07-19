@@ -2,8 +2,8 @@ import $ from 'jquery'
 import { pixivHost, serveHost } from '../../../assets/script/config'
 
 export function AListTagTask() {
-  return $.ajax(`${serveHost}/collect/listTagTask`,{
-    headers:window.authorizeForm
+  return $.ajax(`${serveHost}/collect/listTagTask`, {
+    headers: window.authorizeForm
   })
 }
 
@@ -12,7 +12,7 @@ export function APixivDrawSave(pixivDraw) {
     url: `${serveHost}/collect/save`,
     data: pixivDraw,
     dataType: 'json',
-    headers:window.authorizeForm
+    headers: window.authorizeForm
   })
 }
 
@@ -21,7 +21,7 @@ export function APixivErrorSave(error) {
     url: `${serveHost}/collect/saveError`,
     data: error,
     dataType: 'json',
-    headers:window.authorizeForm
+    headers: window.authorizeForm
   })
 }
 
@@ -35,6 +35,16 @@ export function ABookmarkUntagged(page) {
   return $.ajax(`${pixivHost}/bookmark.php`, {
     data: {
       untagged: 1,
+      rest: 'show',
+      p: page
+    }
+  })
+}
+
+export function ABookmarkTag(tag, page) {
+  return $.ajax(`${pixivHost}/bookmark.php`, {
+    data: {
+      tag,
       rest: 'show',
       p: page
     }

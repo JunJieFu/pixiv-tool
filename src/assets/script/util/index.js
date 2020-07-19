@@ -91,7 +91,7 @@ export default {
     clone.find('.input-container input').prop({ checked: true })
     clone.css('display', 'none')
     clone.find('[name="add_tag"]').each((index, item) => {
-      item.value = '太美了'
+      item.value = tagName
     })
     $('body').append(clone)
     return clone
