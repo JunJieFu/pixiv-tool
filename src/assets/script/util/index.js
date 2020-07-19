@@ -12,31 +12,6 @@ export default {
         .attr('content')
     )
     let draw = null
-    // for (let script of scriptList) {
-    //   let scriptString = $(script).html()
-    //   let sourceObject = (function() {
-    //     // eslint-disable-next-line no-eval
-    //     window.eval(
-    //       scriptString.replace(
-    //         "'use strict';var globalInitData",
-    //         'var collectInitData'
-    //       )
-    //     )
-    //     try {
-    //       // eslint-disable-next-line no-eval
-    //       return window.eval('collectInitData')
-    //     } catch (e) {
-    //       return null
-    //     }
-    //   })()
-    //   if (sourceObject) {
-    //     draw =
-    //       sourceObject.preload.illust[
-    //         Object.keys(sourceObject.preload.illust)[0]
-    //       ]
-    //     break
-    //   }
-    // }
 
     draw = sourceObject.illust[Object.keys(sourceObject.illust)[0]]
     if (!draw) {

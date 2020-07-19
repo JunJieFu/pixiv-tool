@@ -1,10 +1,3 @@
-export class AuthorizeForm {
-  constructor() {
-    this.accessKey = null
-    this.secretKey = null
-  }
-}
-
 export class OptionEnum {
   /**
    * 下拉枚举
