@@ -1,8 +1,6 @@
-import './elements/app'
-import './components/form/btn/index'
-import './components/form/input/index'
+import './elements/entrance'
 import './extend/ripple/index'
 ;(function() {
-  let toolBox = document.createElement('pixiv-tool')
+  let toolBox = document.createElement('entrance-button')
   document.documentElement.appendChild(toolBox)
 })()

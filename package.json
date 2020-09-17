@@ -137,5 +137,9 @@
     "semi": false,
     "tabWidth": 2,
     "useTabs": false
+  },
+  "devDependencies": {
+    "@mdi/js": "^5.5.55",
+    "uglifyjs-webpack-plugin": "^2.2.0"
   }
 }
