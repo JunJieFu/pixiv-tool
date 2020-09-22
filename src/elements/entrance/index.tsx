@@ -1,17 +1,19 @@
-import { define, WeElement } from 'omi'
-import '../app'
-import 'omim/dialog'
-import 'omim/icon-button'
+import { WeElement, h, tag } from "omi";
+import * as css from "./_index.less";
+import "../app/index";
+import "@omim/core/dialog";
+import "@omim/core/icon-button";
 
-define('entrance-button', class extends WeElement {
-  static css = [require('./_index.less')]
+@tag("entrance-button")
+export default class extends WeElement {
+  static css = css;
 
-  visible = false
+  visible = false;
 
   show = () => {
-    this.visible = true
-    this.update()
-  }
+    this.visible = true;
+    this.update();
+  };
 
   render() {
     return (
@@ -19,13 +21,13 @@ define('entrance-button', class extends WeElement {
         <m-dialog
           show={this.visible}
           onClosed={() => {
-            this.visible = false
+            this.visible = false;
           }}
           css=".mdc-dialog__surface {width:600px}"
         >
           <pixiv-tool />
         </m-dialog>
-        <m-icon-button css={require('./_icon_button.less')} onClick={this.show}>
+        <m-icon-button css={require("./_icon_button.less")} onClick={this.show}>
           <svg viewBox="0 0 24 24" width="2em" height="2em" aria-hidden="true">
             <path
               fill="#FFF"
@@ -40,6 +42,6 @@ define('entrance-button', class extends WeElement {
           </svg>
         </m-icon-button>
       </div>
-    )
+    );
   }
-})
+}

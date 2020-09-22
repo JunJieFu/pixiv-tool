@@ -1,20 +1,21 @@
 .tab{
-  display: flex;
-  width: 100%;
-  button{
-    cursor: pointer;
-    @border-size:3px;
-    background: transparent;
-    outline: none;
-    border: none;
-    flex: 1;
-    font-size: 14px;
-    line-height: 40px;
-    border-bottom: @border-size solid transparent;
-    text-align: center;
-    color:var(--mdc-theme-primary, #0072d9);
-    &.active{
-      border-bottom: @border-size solid var(--mdc-theme-primary, #0072d9);
+    display: flex;
+    width: 100%;
+    button{
+      cursor: pointer;
+      @border-size:3px;
+      background: transparent;
+      outline: none;
+      border: none;
+      flex: 1;
+      font-size: 14px;
+      line-height: 40px;
+      border-bottom: @border-size solid transparent;
+      text-align: center;
+      color:var(--mdc-theme-primary, #0072d9);
+      &.active{
+        border-bottom: @border-size solid var(--mdc-theme-primary, #0072d9);
+      }
     }
   }
-}
+  
