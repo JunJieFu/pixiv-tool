@@ -102,9 +102,9 @@ function calculate(e: ShowRippleEvent, el: HTMLElement) {
   return { radius, scale, x, y, centerX, centerY };
 }
 
-extend("ripple", (el, path: Boolean | string) => {
+extend("ripple", (el, path: boolean | string) => {
   let color: string;
-  if (path instanceof Boolean) {
+  if (typeof path === "boolean") {
     color = "currentColor";
   } else {
     color = path;

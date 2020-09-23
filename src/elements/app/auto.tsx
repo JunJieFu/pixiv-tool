@@ -26,7 +26,7 @@ export default class extends WeElement {
   timeout: NodeJS.Timeout;
 
   onSwitch = async () => {
-    this.autoCollectStorageModel.defaultInterval = parseInt(
+    this.autoCollectStorageModel.defaultInterval = Number(
       this.$autoCollectInterval.mdc.value
     );
 

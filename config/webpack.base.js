@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const packageJson = require("../package.json");
 
 module.exports = {
-  entry: [path.join(__dirname, "..", "src/index.tsx")],
+  entry: [path.join(__dirname, "..", "src/index.ts")],
 
   devServer: {
     port: 3000,
