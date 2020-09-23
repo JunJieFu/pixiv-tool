@@ -13,10 +13,10 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     alias: packageJson.alias,
-    // alias: {
-    //     '@': path.resolve(__dirname, '..', 'src'),
-    //     'omi': 'omio'
-    // }
+    alias: {
+      "src": path.resolve(__dirname, "..", "src"),
+      // omi: "omio",
+    },
   },
 
   module: {

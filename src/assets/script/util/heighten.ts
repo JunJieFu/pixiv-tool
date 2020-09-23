@@ -69,12 +69,12 @@ export default {
    * 枚举代理
    * @param object
    */
-  enumProxy(object: object) {
-    const o = {};
-    Object.keys(object).forEach((key) => {
-      o[key] = { key, value: object[key] };
+  enumProxy<T extends object>(param: T) {
+    const map: Map<string, { key: string; value: string }> = new Map();
+    Object.keys(param).forEach((key) => {
+      map[key] = { key, value: param[key] };
     });
-    return o;
+    return map;
   },
   /**
    * 沉睡

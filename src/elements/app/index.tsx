@@ -4,7 +4,7 @@ import "@omim/core/text-field";
 import * as css from "./_index.less";
 import "./collect";
 import "./auto";
-import { EnumModel } from "../../assets/script/model";
+import { EnumModel } from "src/assets/script/model";
 
 type TabKey = "collect" | "auto";
 

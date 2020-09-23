@@ -1,8 +1,10 @@
 import { tag, WeElement, h } from "omi";
+import { myService, pixivService } from "src/assets/script/service";
+import storageUtil from "src/assets/script/util/storage";
 import "@omim/core/text-field";
 import "@omim/core/switch";
-import { myService, pixivService } from "../../assets/script/service";
-import storageUtil from "../../assets/script/util/storage";
+import Switch from "@omim/core/switch";
+import TextField from "@omim/core/text-field";
 
 const AUTO_COLLECT = "pixiv-tool-auto-collect";
 
@@ -14,25 +16,21 @@ class AutoCollectStorageModel {
 
 @tag("pixiv-auto")
 export default class extends WeElement {
-  $autoCollectSwitch: HTMLElement = null;
-  $autoCollectInterval: HTMLElement = null;
+  $autoCollectSwitch: Switch;
+  $autoCollectInterval: TextField;
 
   autoCollectStorageModel = storageUtil.localGet(
     AUTO_COLLECT,
     new AutoCollectStorageModel()
   );
-  timeout = null;
+  timeout: NodeJS.Timeout;
 
   onSwitch = async () => {
     this.autoCollectStorageModel.defaultInterval = parseInt(
-      (this.$autoCollectInterval.shadowRoot.getElementById(
-        "my-text-field"
-      ) as HTMLInputElement).value
+      this.$autoCollectInterval.mdc.value
     );
 
-    this.autoCollectStorageModel.defaultSwitch = (this.$autoCollectSwitch.shadowRoot.getElementById(
-      "basic-switch"
-    ) as HTMLInputElement).checked;
+    this.autoCollectStorageModel.defaultSwitch = this.$autoCollectSwitch.switchControl.checked;
     storageUtil.localSet(AUTO_COLLECT, this.autoCollectStorageModel);
     this.collect();
   };
@@ -41,7 +39,6 @@ export default class extends WeElement {
       AUTO_COLLECT,
       new AutoCollectStorageModel()
     );
-
     clearTimeout(this.timeout);
     if (
       this.autoCollectStorageModel.defaultSwitch &&
@@ -68,11 +65,11 @@ export default class extends WeElement {
           label="间隔秒数"
           outlined
           value={this.autoCollectStorageModel.defaultInterval}
-          ref={(e: HTMLElement) => (this.$autoCollectInterval = e)}
+          ref={(e: TextField) => (this.$autoCollectInterval = e)}
         />
         <m-switch
           label="自动采集收藏夹"
-          ref={(e: HTMLElement) => (this.$autoCollectSwitch = e)}
+          ref={(e: Switch) => (this.$autoCollectSwitch = e)}
           style="margin-left:30px"
           onChange={this.onSwitch}
           checked={this.autoCollectStorageModel.defaultSwitch}
