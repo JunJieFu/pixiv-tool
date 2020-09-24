@@ -163,9 +163,6 @@ export default class extends WeElement {
           <m-button ripple dense raised onClick={this.insert}>
             采集收藏
           </m-button>
-          <m-button ripple dense raised onClick={this.getText}>
-            测试
-          </m-button>
         </p>
       </div>
     );
