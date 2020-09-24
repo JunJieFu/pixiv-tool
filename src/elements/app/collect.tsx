@@ -1,4 +1,4 @@
-import { tag, WeElement, h } from "omi";
+import { h, tag, WeElement } from "omi";
 import { myService, pixivService } from "src/assets/script/service";
 import * as css from "./_index.less";
 import "@omim/core/text-field";
@@ -6,7 +6,7 @@ import TextField from "@omim/core/text-field";
 import * as $ from "jquery";
 import heightenUtil from "src/assets/script/util/heighten";
 import { PixivDetail, PixivTagDetail } from "src/assets/constant/custom_type";
-import {TestDetail} from "src/assets/constant/test_detail";
+import { TestDetail } from "src/assets/constant/test_detail";
 
 @tag("pixiv-collect")
 export default class extends WeElement {
@@ -70,34 +70,7 @@ export default class extends WeElement {
   }
 
   getText() {
-    const html: string = TestDetail.html;
-    let sourceObject = JSON.parse(
-      $(html)
-        .filter((_, item: HTMLElement) => item.id === "meta-preload-data")
-        .attr("content")
-    );
-
-    let picture: PixivDetail =
-      sourceObject.illust[Object.keys(sourceObject.illust)[0]];
-      
-    if (!picture) {
-      throw Error("picture为空?");
-    } else {
-      return {
-        pixivId: picture.id,
-        name: picture.title,
-        userName: picture.userName,
-        userId: picture.userId,
-        tagString: picture.tags.tags
-          .map((item: PixivTagDetail) => {
-            if (item.translation && item.translation.en) {
-              return item.translation.en;
-            }
-            return item.tag;
-          })
-          .join("|"),
-      };
-    }
+    console.log(this.getPixivObject(TestDetail.html))
   }
 
   insert = async () => {
@@ -128,7 +101,7 @@ export default class extends WeElement {
             ref={(e: TextField) => (this.$interval = e)}
           />
         </p>
-        <hr />
+        <hr/>
         <p>采集坐标：{this.currentAmount}</p>
         <p>采集异常数：{this.errorAmount}</p>
         <p>
@@ -145,7 +118,7 @@ export default class extends WeElement {
             停止
           </m-button>
         </p>
-        <hr />
+        <hr/>
         <p>
           <m-text-field
             label="开始页数"
