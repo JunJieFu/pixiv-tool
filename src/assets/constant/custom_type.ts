@@ -11,7 +11,7 @@ export type PixivPicture = {
   pixivUserName: string;
   pixivUserId: string;
   tagList: string;
-  state: "WAIT" | "SUCCESS" | "FAIL" | "ABANDON";
+  state: 'WAIT' | 'SUCCESS' | 'FAIL' | 'ABANDON';
 };
 
 export type SaveDto = {
@@ -57,7 +57,7 @@ export type PixivResult<T> = {
   message: string;
 };
 
-export type PixivDetail = {
+export interface PixivDetail {
   id: string;
   title: string;
   userName: string;
@@ -67,7 +67,9 @@ export type PixivDetail = {
     isLocked: boolean;
     tags: PixivTagDetail[];
   };
-};
+  illustComment: string
+  urls: Record<'original', string>
+}
 
 export type PixivTagDetail = {
   deletable: boolean;
@@ -77,3 +79,15 @@ export type PixivTagDetail = {
   userId: string;
   userName: string;
 };
+
+export interface PixivWork {
+  pixivId: string
+  description?: string
+  originalUrl?: string
+  translateTag?: string
+}
+
+
+export interface Page<T> {
+  content: T[]
+}

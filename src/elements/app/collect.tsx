@@ -1,56 +1,105 @@
-import { h, tag, WeElement } from "omi";
-import { myService, pixivService } from "src/assets/script/service";
-import * as css from "./_index.less";
-import "@omim/core/text-field";
-import TextField from "@omim/core/text-field";
-import * as $ from "jquery";
-import heightenUtil from "src/assets/script/util/heighten";
-import { PixivDetail, PixivTagDetail } from "src/assets/constant/custom_type";
-import { TestDetail } from "src/assets/constant/test_detail";
+import { h, tag, WeElement } from 'omi'
+import { myService, pixivService } from 'src/assets/script/service'
+import * as css from './_index.less'
+import '@omim/core/text-field'
+import TextField from '@omim/core/text-field'
+import * as $ from 'jquery'
+import heightenUtil from 'src/assets/script/util/heighten'
+import { PixivDetail, PixivTagDetail, PixivWork } from 'src/assets/constant/custom_type'
+import { TestDetail } from 'src/assets/constant/test_detail'
 
-@tag("pixiv-collect")
+@tag('pixiv-collect')
 export default class extends WeElement {
-  static css = css;
-  type = true;
-  errorAmount = 0;
-  currentAmount = 0;
-  loading = false;
-  $interval: TextField;
-  $insertStartPageIndex: TextField;
-  $insertEndPageIndex: TextField;
+  static css = css
+  type = true
+  errorAmount = 0
+  currentAmount = 0
+  loading = false
+  $interval: TextField
+  $insertStartPageIndex: TextField
+  $insertEndPageIndex: TextField
 
   collectTag = async () => {
-    let tagTaskList = await myService.listTagTask();
-    const interval = Number(this.$interval.mdc.value);
-    this.loading = true;
+    let tagTaskList = await myService.listTagTask()
+    const interval = parseInt(this.$interval.mdc.value)
+    this.loading = true
     for (let tagTask of tagTaskList.data) {
       try {
         if (!this.loading) {
-          return;
+          return
         }
-        let html = await pixivService.collect(tagTask.pixivId);
-        await myService.save(this.getPixivObject(html));
-        this.currentAmount++;
+        let html = await pixivService.collect(tagTask.pixivId)
+        await myService.save(this.getPixivObject(html))
+        this.currentAmount++
       } catch (e) {
-        this.errorAmount++;
+        this.errorAmount++
       } finally {
-        await heightenUtil.sleep(interval * 1000);
-        this.update();
+        await heightenUtil.sleep(interval * 1000)
+        this.update()
       }
     }
-  };
+  }
+
+  collectTagOriginalUrl = async () => {
+    const result = await myService.pagingOriginalUrlTask()
+    const interval = parseInt(this.$interval.mdc.value)
+    this.loading = true
+    for (let tagTask of result.data.content) {
+      try {
+        if (!this.loading) {
+          return
+        }
+        let html = await pixivService.collect(tagTask.pixivId)
+        await myService.updateOriginalUrl(this.getUpdateOriginalUrlDto(html))
+        this.currentAmount++
+      } catch (e) {
+        this.errorAmount++
+      } finally {
+        await heightenUtil.sleep(interval * 1000)
+        this.update()
+      }
+    }
+  }
+
+  getUpdateOriginalUrlDto(html: string): PixivWork {
+    let sourceObject = JSON.parse(
+      $(html)
+        .filter((_, item: HTMLElement) => item.id === 'meta-preload-data')
+        .attr('content')
+    )
+
+    let picture: PixivDetail =
+      sourceObject.illust[Object.keys(sourceObject.illust)[0]]
+    if (!picture) {
+      throw Error('picture为空?')
+    } else {
+      return {
+        pixivId: picture.id,
+        description: picture.illustComment,
+        originalUrl: picture.urls.original,
+        translateTag: picture.tags.tags
+          .map((item: PixivTagDetail) => {
+            if (item.translation && item.translation.en) {
+              return item.translation.en
+            }
+            return item.tag
+          })
+          .join('|')
+      }
+    }
+  }
 
   getPixivObject(html: string) {
     let sourceObject = JSON.parse(
       $(html)
-        .filter((_, item: HTMLElement) => item.id === "meta-preload-data")
-        .attr("content")
-    );
+        .filter((_, item: HTMLElement) => item.id === 'meta-preload-data')
+        .attr('content')
+    )
 
     let picture: PixivDetail =
-      sourceObject.illust[Object.keys(sourceObject.illust)[0]];
+      sourceObject.illust[Object.keys(sourceObject.illust)[0]]
     if (!picture) {
-      throw Error("picture为空?");
+      throw Error('picture为空?')
     } else {
       return {
         pixivId: picture.id,
@@ -60,12 +109,12 @@ export default class extends WeElement {
         tagString: picture.tags.tags
           .map((item: PixivTagDetail) => {
             if (item.translation && item.translation.en) {
-              return item.translation.en;
+              return item.translation.en
             }
-            return item.tag;
+            return item.tag
           })
-          .join("|"),
-      };
+          .join('|')
+      }
     }
   }
 
@@ -74,21 +123,21 @@ export default class extends WeElement {
   }
 
   insert = async () => {
-    const startPageIndex = Number(this.$insertStartPageIndex.mdc.value);
-    const endPageIndex = Number(this.$insertEndPageIndex.mdc.value);
-    const interval = Number(this.$interval.mdc.value);
+    const startPageIndex = Number(this.$insertStartPageIndex.mdc.value)
+    const endPageIndex = Number(this.$insertEndPageIndex.mdc.value)
+    const interval = Number(this.$interval.mdc.value)
     if (
       !isNaN(startPageIndex) &&
       !isNaN(endPageIndex) &&
       startPageIndex <= endPageIndex
     ) {
       for (let i = startPageIndex; i <= endPageIndex; i++) {
-        const result = await pixivService.listBookmarks(i);
-        await myService.insert(result.body);
-        await heightenUtil.sleep(interval * 1000);
+        const result = await pixivService.listBookmarks(i)
+        await myService.insert(result.body)
+        await heightenUtil.sleep(interval * 1000)
       }
     }
-  };
+  }
 
   render = () => {
     return (
@@ -119,6 +168,27 @@ export default class extends WeElement {
           </m-button>
         </p>
         <hr/>
+
+        <hr/>
+        <p>采集坐标：{this.currentAmount}</p>
+        <p>采集异常数：{this.errorAmount}</p>
+        <p>
+          <m-button ripple dense raised onClick={this.collectTagOriginalUrl}>
+            采集原始Url
+          </m-button>
+          <m-button
+            ripple
+            dense
+            raised
+            onClick={() => (this.loading = false)}
+            style="margin-left:10px"
+          >
+            停止
+          </m-button>
+        </p>
+        <hr/>
+
+
         <p>
           <m-text-field
             label="开始页数"
@@ -138,6 +208,6 @@ export default class extends WeElement {
           </m-button>
         </p>
       </div>
-    );
-  };
+    )
+  }
 }
