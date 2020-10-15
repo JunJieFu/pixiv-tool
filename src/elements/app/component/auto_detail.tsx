@@ -47,17 +47,21 @@ export default class extends WeElement {
       Date.now() - this.autoCollectStorageModel.lastCollectTime >
       this.autoCollectStorageModel.defaultInterval * 1000 * 0.75
     ) {
-     try{
-       const result = await myService.pagingOriginalUrlTask(1)
-       for (let tagTask of result.data.content) {
-         let html = await pixivService.collect(tagTask.pixivId)
-         await myService.updateOriginalUrl(analysisUtil.getUpdateOriginalUrlDto(html))
-       }
-       this.autoCollectStorageModel.lastCollectTime = Date.now()
-       storageUtil.localSet(AUTO_DETAIL, this.autoCollectStorageModel)
-     }catch (e) {
 
-     }
+      const result = await myService.pagingOriginalUrlTask(1)
+      for (let tagTask of result.data.content) {
+        try {
+          let html = await pixivService.collect(tagTask.pixivId)
+          await myService.updateOriginalUrl(analysisUtil.getUpdateOriginalUrlDto(html))
+        } catch (e) {
+          await myService.updateOriginalUrl({
+            pixivId: tagTask.pixivId,
+            originalUrl: `采集失败：${e.message}`
+          })
+        }
+      }
+      this.autoCollectStorageModel.lastCollectTime = Date.now()
+      storageUtil.localSet(AUTO_DETAIL, this.autoCollectStorageModel)
     }
     this.timeout = setTimeout(() => {
       this.collect()
