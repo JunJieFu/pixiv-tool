@@ -84,7 +84,7 @@ export interface PixivWork {
   pixivId: string
   description?: string
   originalUrl?: string
-  translateTag?: string
+  translateTags?: string
 }
 
 

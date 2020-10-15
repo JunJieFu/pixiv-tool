@@ -3,9 +3,9 @@ import { myService, pixivService } from 'src/assets/script/service'
 import * as css from './_index.less'
 import '@omim/core/text-field'
 import TextField from '@omim/core/text-field'
-import * as $ from 'jquery'
 import heightenUtil from 'src/assets/script/util/heighten'
-import { PixivDetail, PixivTagDetail, PixivWork } from 'src/assets/constant/custom_type'
+import analysisUtil from 'src/assets/script/util/analysis'
+
 // import { TestDetail } from 'src/assets/constant/test_detail'
 
 @tag('pixiv-collect')
@@ -20,27 +20,6 @@ export default class extends WeElement {
   $insertStartPageIndex: TextField
   $insertEndPageIndex: TextField
 
-  // collectTag = async () => {
-  //   let tagTaskList = await myService.listTagTask()
-  //   const interval = Number(this.$interval.mdc.value)
-  //   this.loading = true
-  //   for (let tagTask of tagTaskList.data) {
-  //     try {
-  //       if (!this.loading) {
-  //         return
-  //       }
-  //       let html = await pixivService.collect(tagTask.pixivId)
-  //       await myService.save(this.getPixivObject(html))
-  //       this.currentAmount++
-  //     } catch (e) {
-  //       this.errorAmount++
-  //     } finally {
-  //       await heightenUtil.sleep(interval * 1000)
-  //       this.update()
-  //     }
-  //   }
-  // }
-
   collectTagOriginalUrl = async () => {
     const pageSize = Number(this.$pageSize.mdc.value)
     const result = await myService.pagingOriginalUrlTask(pageSize)
@@ -52,7 +31,7 @@ export default class extends WeElement {
           return
         }
         let html = await pixivService.collect(tagTask.pixivId)
-        await myService.updateOriginalUrl(this.getUpdateOriginalUrlDto(html))
+        await myService.updateOriginalUrl(analysisUtil.getUpdateOriginalUrlDto(html))
         this.currentAmount++
       } catch (e) {
         this.errorAmount++
@@ -63,62 +42,6 @@ export default class extends WeElement {
     }
   }
 
-  getUpdateOriginalUrlDto(html: string): PixivWork {
-    let sourceObject = JSON.parse(
-      $(html)
-        .filter((_, item: HTMLElement) => item.id === 'meta-preload-data')
-        .attr('content')
-    )
-
-    let picture: PixivDetail =
-      sourceObject.illust[Object.keys(sourceObject.illust)[0]]
-    if (!picture) {
-      throw Error('picture为空?')
-    } else {
-      return {
-        pixivId: picture.id,
-        description: picture.illustComment,
-        originalUrl: picture.urls.original,
-        translateTag: picture.tags.tags
-          .map((item: PixivTagDetail) => {
-            if (item.translation && item.translation.en) {
-              return item.translation.en
-            }
-            return item.tag
-          })
-          .join('|')
-      }
-    }
-  }
-
-  // getPixivObject(html: string) {
-  //   let sourceObject = JSON.parse(
-  //     $(html)
-  //       .filter((_, item: HTMLElement) => item.id === 'meta-preload-data')
-  //       .attr('content')
-  //   )
-  //
-  //   let picture: PixivDetail =
-  //     sourceObject.illust[Object.keys(sourceObject.illust)[0]]
-  //   if (!picture) {
-  //     throw Error('picture为空?')
-  //   } else {
-  //     return {
-  //       pixivId: picture.id,
-  //       name: picture.title,
-  //       userName: picture.userName,
-  //       userId: picture.userId,
-  //       tagString: picture.tags.tags
-  //         .map((item: PixivTagDetail) => {
-  //           if (item.translation && item.translation.en) {
-  //             return item.translation.en
-  //           }
-  //           return item.tag
-  //         })
-  //         .join('|')
-  //     }
-  //   }
-  // }
 
   insert = async () => {
     const startPageIndex = Number(this.$insertStartPageIndex.mdc.value)
@@ -149,25 +72,8 @@ export default class extends WeElement {
           />
         </p>
         <hr/>
-        {/*<p>采集坐标：{this.currentAmount}</p>*/}
-        {/*<p>采集异常数：{this.errorAmount}</p>*/}
-        {/*<p>*/}
-        {/*  <m-button ripple dense raised onClick={this.collectTag}>*/}
-        {/*    采集标签*/}
-        {/*  </m-button>*/}
-        {/*  <m-button*/}
-        {/*    ripple*/}
-        {/*    dense*/}
-        {/*    raised*/}
-        {/*    onClick={() => (this.loading = false)}*/}
-        {/*    style="margin-left:10px"*/}
-        {/*  >*/}
-        {/*    停止*/}
-        {/*  </m-button>*/}
-        {/*</p>*/}
-        {/*<hr/>*/}
         <m-text-field
-          label="采集页数"
+          label="采集条数"
           outlined
           ref={(e: TextField) => (this.$pageSize = e)}
         />
