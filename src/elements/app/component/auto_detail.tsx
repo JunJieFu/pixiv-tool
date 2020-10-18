@@ -1,4 +1,4 @@
-import { tag, WeElement, h } from 'omi'
+import { h, tag, WeElement } from 'omi'
 import { myService, pixivService } from 'src/assets/script/service'
 import storageUtil from 'src/assets/script/util/storage'
 import '@omim/core/text-field'
@@ -6,7 +6,6 @@ import '@omim/core/switch'
 import Switch from '@omim/core/switch'
 import TextField from '@omim/core/text-field'
 import analysisUtil from '../../../assets/script/util/analysis'
-import heightenUtil from '../../../assets/script/util/heighten'
 
 const AUTO_DETAIL = 'pixiv-tool-auto-collect-detail'
 
@@ -14,12 +13,14 @@ class AutoCollectStorageModel {
   defaultInterval = 1
   defaultSwitch = false
   lastCollectTime = 0
+  defaultPageSize = 4
 }
 
 @tag('auto-detail')
 export default class extends WeElement {
   $autoCollectSwitch: Switch
   $autoCollectInterval: TextField
+  $pageSize: TextField
 
   autoCollectStorageModel = storageUtil.localGet(
     AUTO_DETAIL,
@@ -31,12 +32,14 @@ export default class extends WeElement {
     this.autoCollectStorageModel.defaultInterval = Number(
       this.$autoCollectInterval.mdc.value
     )
-
+    this.autoCollectStorageModel.defaultPageSize = Number(
+      this.$pageSize.mdc.value
+    )
     this.autoCollectStorageModel.defaultSwitch = this.$autoCollectSwitch.switchControl.checked
     storageUtil.localSet(AUTO_DETAIL, this.autoCollectStorageModel)
-    this.collect()
+    this.getTask()
   }
-  collect = async () => {
+  getTask = async () => {
     this.autoCollectStorageModel = storageUtil.localGet(
       AUTO_DETAIL,
       new AutoCollectStorageModel()
@@ -48,24 +51,26 @@ export default class extends WeElement {
       this.autoCollectStorageModel.defaultInterval * 1000 * 0.75
     ) {
 
-      const result = await myService.pagingOriginalUrlTask(1)
-      for (let tagTask of result.data.content) {
-        try {
-          let html = await pixivService.collect(tagTask.pixivId)
-          await myService.updateOriginalUrl(analysisUtil.getUpdateOriginalUrlDto(html))
-        } catch (e) {
-          await myService.updateOriginalUrl({
-            pixivId: tagTask.pixivId,
-            originalUrl: `采集失败：${e.message}`
-          })
-        }
-      }
+      const result = await myService.pagingOriginalUrlTask(this.autoCollectStorageModel.defaultPageSize)
+      await Promise.all(result.data.content.map(it => this.collect(it.pixivId)))
       this.autoCollectStorageModel.lastCollectTime = Date.now()
       storageUtil.localSet(AUTO_DETAIL, this.autoCollectStorageModel)
     }
     this.timeout = setTimeout(() => {
-      this.collect()
+      this.getTask()
     }, this.autoCollectStorageModel.defaultInterval * 1000)
+  }
+
+  collect = async (pixivId: string) => {
+    try {
+      let html = await pixivService.collect(pixivId)
+      await myService.updateOriginalUrl(analysisUtil.getUpdateOriginalUrlDto(html))
+    } catch (e) {
+      await myService.updateOriginalUrl({
+        pixivId: pixivId,
+        originalUrl: `采集失败：${e.message}`
+      })
+    }
   }
 
   installed = () => {
@@ -79,6 +84,13 @@ export default class extends WeElement {
           outlined
           value={this.autoCollectStorageModel.defaultInterval}
           ref={(e: TextField) => (this.$autoCollectInterval = e)}
+        />
+        <m-text-field
+          style="margin-left:15px;width:100px"
+          label="线程数"
+          outlined
+          value={this.autoCollectStorageModel.defaultPageSize}
+          ref={(e: TextField) => (this.$pageSize = e)}
         />
         <m-switch
           label="自动采集详情"
