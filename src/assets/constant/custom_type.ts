@@ -89,5 +89,5 @@ export interface PixivWork {
 
 
 export interface Page<T> {
-  content: T[]
+  items: T[]
 }

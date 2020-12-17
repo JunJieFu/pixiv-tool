@@ -15,10 +15,10 @@ export const myService = {
   listTagTask(): JQuery.jqXHR<Result<PixivPicture[]>> {
     return $.ajax(`${serveHost}/collect/listTagTask`)
   },
-  pagingOriginalUrlTask(size: number = 20): JQuery.jqXHR<Result<Page<PixivWork>>> {
+  pagingOriginalUrlTask(limit: number = 20): JQuery.jqXHR<Result<Page<PixivWork>>> {
     return $.get({
       url: `${serveHost}/collect/pagingOriginalUrlTask`,
-      data: { size }
+      data: { limit }
     })
   },
   updateOriginalUrl(dto: PixivWork): JQuery.jqXHR<Result<boolean>> {

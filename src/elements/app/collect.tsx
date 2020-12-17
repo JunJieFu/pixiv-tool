@@ -25,7 +25,7 @@ export default class extends WeElement {
     const result = await myService.pagingOriginalUrlTask(pageSize)
     const interval = Number(this.$interval.mdc.value)
     this.loading = true
-    for (let tagTask of result.data.content) {
+    for (let tagTask of result.data.items) {
       try {
         if (!this.loading) {
           return

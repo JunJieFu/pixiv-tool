@@ -52,7 +52,7 @@ export default class extends WeElement {
     ) {
 
       const result = await myService.pagingOriginalUrlTask(this.autoCollectStorageModel.defaultPageSize)
-      await Promise.all(result.data.content.map(it => this.collect(it.pixivId)))
+      await Promise.all(result.data.items.map(it => this.collect(it.pixivId)))
       this.autoCollectStorageModel.lastCollectTime = Date.now()
       storageUtil.localSet(AUTO_DETAIL, this.autoCollectStorageModel)
     }
